@@ -1,5 +1,6 @@
 ﻿using AuthService.Models.Dtos;
 using AuthService.Services.IServices;
+using AutoMapper;
 using EzzyShopMessageBus;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +16,11 @@ namespace AuthService.Controllers
         private readonly IUser _userService;
         private readonly ResponseDto _response;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public UserController(IUser user,IConfiguration configuration)
+        public UserController(Mapper mapper,IUser user,IConfiguration configuration)
         {
+            _mapper = mapper;
             _userService = user;
             _configuration = configuration;
             _response = new ResponseDto();
@@ -86,6 +89,22 @@ namespace AuthService.Controllers
             _response.Result = res;
             _response.IsSuccess = false;
             return BadRequest(_response);
+        }
+
+        [HttpGet("{Id}")]
+        public async Task<ActionResult<ResponseDto>> GetUser(string Id)
+        {
+            var res = await _userService.GetUserById(Id);
+            //var user = _mapper.Map<UserDto>(res);
+            if (res != null)
+            {
+                //this was success
+                _response.Result = res;
+                return Ok(_response);
+            }
+            _response.Errormessage = "User Not Found ";
+            _response.IsSuccess = false;
+            return NotFound(_response);
         }
     }
 }

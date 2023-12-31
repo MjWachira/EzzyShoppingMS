@@ -49,6 +49,13 @@ namespace AuthService.Services
             }
         }
 
+        public async Task<ApplicationUser> GetUserById(string Id)
+        {
+           
+             return await _context.ApplicationUsers.Where(x => x.Id == Id).FirstOrDefaultAsync();
+            
+        }
+
         public async Task<LoginResponseDto> loginUser(LoginRequestDto loginRequestDto)
         {
             //a User with that username Exists
@@ -89,15 +96,15 @@ namespace AuthService.Services
                 if(result.Succeeded)
                 {
 
-                    ////does the role exist 
-                    //if (!_roleManager.RoleExistsAsync(userDto.Role).GetAwaiter().GetResult())
-                    //{
-                    //    //create the role 
-                    //    await _roleManager.CreateAsync(new IdentityRole(userDto.Role));
-                    //}
+                    ///does the role exist 
+                    if (!_roleManager.RoleExistsAsync(userDto.Role).GetAwaiter().GetResult())
+                    {
+                        //create the role 
+                      await _roleManager.CreateAsync(new IdentityRole(userDto.Role));
+                    }
 
                     ////assign the user the role
-                    //await _userManager.AddToRoleAsync(user, userDto.Role);
+                    await _userManager.AddToRoleAsync(user, userDto.Role);
                     return string.Empty;
                 }
                 else

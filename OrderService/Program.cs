@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using OrderService.Extensions;
 using OrderServiceExtensions;
 using OrderService.Data;
+using OrderService.Services.IServices;
+using OrderService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +23,16 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.AddAuth();
 builder.AddSwaggenGenExtension();
 
+builder.Services.AddHttpClient("Coupon", c => c.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ServiceURl:CouponService")));
+builder.Services.AddHttpClient("Cart", c => c.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ServiceURl:CartService")));
+
+// FOR DI
+builder.Services.AddScoped<ICart, CartServices>();
+builder.Services.AddScoped<ICoupon, CouponServices>();
+builder.Services.AddScoped<IOrder, OrderServices>();
 var app = builder.Build();
+
+Stripe.StripeConfiguration.ApiKey = builder.Configuration.GetValue<string>("Stripe:Key");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

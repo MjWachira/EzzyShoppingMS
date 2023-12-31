@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace AuthService.Models.Dtos
+﻿namespace OrderService.Models.Dtos
 {
     public class UserDto
     {

@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OrderService.Models;
+using RewardsService.Models;
 
-namespace OrderService.Data
+namespace RewardsService.Data
 {
     public class ApplicationDbContext : DbContext
     {
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        public DbSet<Orders> Orders { get; set; }
+        public DbSet<Reward> Rewards { get; set; }
     }
 }
-                                                                      

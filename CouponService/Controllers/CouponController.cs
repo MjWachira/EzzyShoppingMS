@@ -5,6 +5,7 @@ using CouponService.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 namespace CouponService.Controllers
 {
@@ -57,17 +58,31 @@ namespace CouponService.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ResponseDto>> AddCoupon(AddCouponDto newCoupon)
         {
-            var coupon = _mapper.Map<Coupon>(newCoupon);
+            var coupon = _mapper.Map<Models.Coupon>(newCoupon);
             var response = await _couponService.AddCoupon(coupon);
             _response.Result = response;
+
+            //addin coupon to stripe
+
+            var options = new CouponCreateOptions()
+            {
+                AmountOff = (long)newCoupon.CouponAmount * 100,
+                Currency = "kes",
+                Id = newCoupon.CouponCode,
+                Name = newCoupon.CouponCode
+            };
+
+            var service = new Stripe.CouponService();
+            service.Create(options);
+
             return Created("", _response);
         }
 
         [HttpPut("{Id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ResponseDto>> updateCoupon(Guid Id, AddCouponDto UCoupon)
         {
             var coupon = await _couponService.GetCoupon(Id);
@@ -79,12 +94,26 @@ namespace CouponService.Controllers
             }
             _mapper.Map(UCoupon, coupon);
             var res = await _couponService.UpdateCoupon();
+            var service = new Stripe.CouponService();
+            service.Delete(coupon.CouponCode);
+
+            var options = new CouponCreateOptions()
+            {
+                AmountOff = (long)UCoupon.CouponAmount * 100,
+                Currency = "kes",
+                Id = UCoupon.CouponCode,
+                Name = UCoupon.CouponCode
+            };
+
+            service.Create(options);
+
+
             _response.Result = res;
             return Ok(_response);
         }
 
         [HttpDelete("{Id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ResponseDto>> deleteCoupon(Guid Id)
         {
             var coupon = await _couponService.GetCoupon(Id);
@@ -95,6 +124,10 @@ namespace CouponService.Controllers
                 return NotFound(_response);
             }
             var res = await _couponService.DeleteCoupon(coupon);
+
+            var service = new Stripe.CouponService();
+            service.Delete(coupon.CouponCode);
+
             _response.Result = res;
             return Ok(_response);
         }

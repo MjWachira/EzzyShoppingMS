@@ -63,6 +63,19 @@ namespace CartService.Controllers
             return Ok(_response);
                        
         }
+        [HttpGet("single/{Id}")]
+        public async Task<ActionResult<ResponseDto>> GetCoupon(Guid Id)
+        {
+            var CartItem = await _cartservice.GetCartItem(Id);
+            if (CartItem == null)
+            {
+                _response.Result = "Item Not Found";
+                _response.IsSuccess = false;
+                return NotFound(_response);
+            }
+            _response.Result = CartItem;
+            return Ok(_response);
+        }
 
         [HttpDelete("{Id}")]
         public async Task<ActionResult<ResponseDto>> RemoveFromCart(Guid Id)
@@ -70,7 +83,7 @@ namespace CartService.Controllers
             var CartItem = await _cartservice.GetCartItem(Id);
             if (CartItem == null)
             {
-                _response.Result = "Coupon Not Found";
+                _response.Result = "Item Not Found";
                 _response.IsSuccess = false;
                 return NotFound(_response);
             }
