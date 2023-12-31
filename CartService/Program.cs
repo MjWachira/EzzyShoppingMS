@@ -27,10 +27,11 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 //base url
 builder.Services.AddHttpClient("Product", c => c.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ServiceURl:ProductService")));
-
+builder.Services.AddHttpClient("Coupon", c => c.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ServiceURl:CouponService")));
 //reg for Dependency Injection
 builder.Services.AddScoped<IProduct, ProductServices>();
 builder.Services.AddScoped<ICart, CartServices>();
+builder.Services.AddScoped<ICoupon, CouponService>();
 
 var app = builder.Build();
 

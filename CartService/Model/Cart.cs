@@ -8,5 +8,7 @@
         public int ProductPrice { get; set; }
         public int ProductCount { get; set; }
         public int ProductTotal { get; set; }
+        public string CouponCode { get; set; } = string.Empty;
+        public double Discount { get; set; }
     }
 }

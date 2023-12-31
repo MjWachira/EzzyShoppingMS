@@ -9,5 +9,6 @@ namespace CartService.Services.IServices
         Task<string> RemoveFromCart(Cart cart);
         Task<List<Cart>> GetCartItems(Guid userId);
         Task<Cart> GetCartItem(Guid id);
+        Task saveChanges();
     }
 }

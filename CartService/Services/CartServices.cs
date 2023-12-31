@@ -36,5 +36,10 @@ namespace CartService.Services
             return "Item Removed from Cart";
 
         }
+
+        public async Task saveChanges()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }

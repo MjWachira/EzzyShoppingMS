@@ -14,6 +14,7 @@ namespace CartService.Controllers
     {
         private readonly ICart _cartservice;
         private readonly IProduct _productservice;
+        private readonly ICoupon _couponService;
         private readonly IMapper _mapper;
         private readonly ResponseDto _response;
         public CartController(ICart cart, IProduct product, IMapper mapper)
@@ -76,6 +77,42 @@ namespace CartService.Controllers
             _response.Result = CartItem;
             return Ok(_response);
         }
+
+        [HttpPut("{Id}")]
+        public async Task<ActionResult<ResponseDto>> ApplyCoupon(Guid Id, string Code)
+        {
+
+            var cartItem = await _cartservice.GetCartItem(Id);
+
+            if (cartItem == null)
+            {
+                _response.Errormessage = "order Not Found";
+                return NotFound(_response);
+            }
+            var coupon = await _couponService.GetCouponByCouponCode(Code);
+            if (coupon == null)
+            {
+                _response.Errormessage = "Coupon is not Valid";
+                return NotFound(_response);
+            }
+
+            if (coupon.CouponMinAmount <= cartItem.ProductTotal)
+            {
+                cartItem.CouponCode = coupon.CouponCode;
+                cartItem.Discount = coupon.CouponAmount;
+                await _cartservice.saveChanges();
+                _response.Result = "Code applied";
+                return Ok(_response);
+            }
+            else
+            {
+                _response.Errormessage = "Total amount is less that the minimum amount for this coupon";
+                return BadRequest(_response);
+            }
+            return Ok(_response);
+
+        }
+
 
         [HttpDelete("{Id}")]
         public async Task<ActionResult<ResponseDto>> RemoveFromCart(Guid Id)

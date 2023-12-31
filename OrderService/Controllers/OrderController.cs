@@ -49,9 +49,12 @@ namespace OrderService.Controllers
             return Ok(_responseDto);
 
         }
-        [HttpPut("{Id}")]
 
-        public async Task<ActionResult<ResponseDto>> ApplyCoupon(Guid Id, string Code)
+        ///MOVED TO CART SERVICE
+
+        /*
+        [HttpPut("{Id}")]
+         public async Task<ActionResult<ResponseDto>> ApplyCoupon(Guid Id, string Code)
         {
             
             var order = await _orderService.GetOrderById(Id);
@@ -84,7 +87,7 @@ namespace OrderService.Controllers
            return Ok(_responseDto);
 
         }
-
+        */
 
         [HttpPost("Pay")]
         public async Task<ActionResult<ResponseDto>> makePayments(StripeRequestDto dto)
