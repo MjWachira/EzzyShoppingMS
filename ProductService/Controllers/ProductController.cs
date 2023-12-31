@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -41,6 +42,19 @@ namespace ProductService.Controllers
             return Ok(_responseDto);
 
         }
+        [HttpGet("{Id}")]
+        public async Task<ActionResult<ResponseDto>> GetCoupon(Guid Id)
+        {
+            var product = await _productService.GetProduct(Id);
 
+            if (product == null)
+            {
+                _responseDto.Errormessage = "Product Not found";
+                return NotFound(_responseDto);
+            }
+            _responseDto.Result = product;
+            return Ok(_responseDto);
+
+        }
     }
 }

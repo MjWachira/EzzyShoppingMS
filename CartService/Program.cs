@@ -1,6 +1,8 @@
 using CartService.Extensions;
 using CartService.Data;
 using Microsoft.EntityFrameworkCore;
+using CartService.Services.IServices;
+using CartService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,11 +20,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("myconnection"));
 });
-//reg for Dependency Injection
+
 
 //Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+//base url
+builder.Services.AddHttpClient("Product", c => c.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ServiceURl:ProductService")));
+
+//reg for Dependency Injection
+builder.Services.AddScoped<IProduct, ProductServices>();
+builder.Services.AddScoped<ICart, CartServices>();
 
 var app = builder.Build();
 

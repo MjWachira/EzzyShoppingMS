@@ -24,10 +24,17 @@ namespace CartService.Services
         {
             return await _context.Cart.Where(b => b.UserId == userId).ToListAsync();
         }
-
-        public Task<string> RemoveFromCart(Guid userId, Guid productId)
+        public async Task<Cart> GetCartItem(Guid Id)
         {
-            throw new NotImplementedException();
+            return await _context.Cart.Where(b => b.Id == Id).FirstOrDefaultAsync();
+        }
+
+        public async Task<string> RemoveFromCart(Cart cart)
+        {
+            _context.Cart.Remove(cart);
+            await _context.SaveChangesAsync();
+            return "Item Removed from Cart";
+
         }
     }
 }
