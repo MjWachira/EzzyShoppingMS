@@ -19,7 +19,7 @@ namespace MailService.Service
             _password = _configuration.GetValue<string>("EmailSettings:Password");
         }
 
-        public async Task sendEmail(UserMessageDto user , string Message)
+        public async Task sendEmail(UserMessageDto user , string Message, string v)
         {
             MimeMessage message1 = new MimeMessage();
 

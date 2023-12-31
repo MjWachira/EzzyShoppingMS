@@ -16,6 +16,7 @@ namespace MailService.Messaging
         private readonly string _connectionString;
         private readonly string _queueName;
         private readonly ServiceBusProcessor _emailProcessor;
+        private readonly ServiceBusProcessor _orderProcessor;
         private readonly MailsService _emailService;
         private readonly EmailService _email;
 
@@ -38,11 +39,18 @@ namespace MailService.Messaging
             _emailProcessor.ProcessMessageAsync += OnRegisterUser;
             _emailProcessor.ProcessErrorAsync += ErrorHandler;
             await _emailProcessor.StartProcessingAsync();
+
+            _orderProcessor.ProcessMessageAsync += OnOrder;
+            _orderProcessor.ProcessErrorAsync += ErrorHandler;
+            await _orderProcessor.StartProcessingAsync();
         }
         public async Task Stop()
         {
            await _emailProcessor.StopProcessingAsync();
            await _emailProcessor.DisposeAsync();
+
+            await _orderProcessor.StopProcessingAsync();
+            await _orderProcessor.DisposeAsync();
         }
 
         private Task ErrorHandler(ProcessErrorEventArgs arg)
@@ -68,7 +76,7 @@ namespace MailService.Messaging
                 stringBuilder.Append("<br/>");
                 stringBuilder.Append('\n');
                 stringBuilder.Append("<p>A shop on your palms!!</p>");
-                await _emailService.sendEmail(user, stringBuilder.ToString());
+                await _emailService.sendEmail(user, stringBuilder.ToString(), "");
 
 
                 //insert  to Database
@@ -89,7 +97,53 @@ namespace MailService.Messaging
                 //send an Email to Admin
             }
         }
+        private async Task OnOrder(ProcessMessageEventArgs arg)
+        {
 
-       
+            var message = arg.Message;
+            var body = Encoding.UTF8.GetString(message.Body);//read  as String
+            var reward = JsonConvert.DeserializeObject<RewardDto>(body);//string to UserMessageDto
+
+            try
+            {
+
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append("<img src=\"https://cdn.pixabay.com/photo/2016/01/02/16/53/lion-1118467_640.jpg\" width=\"1000\" height=\"600\">");
+                stringBuilder.Append("<h1> Hello " + reward.Name + "</h1>");
+                stringBuilder.AppendLine("<br/> Order Placed Successfully ");
+
+                stringBuilder.Append("<br/>");
+                stringBuilder.Append('\n');
+                stringBuilder.Append("<p>You can place another order anytime!!</p>");
+
+                var user = new UserMessageDto()
+                {
+                    Email = reward.Email,
+                    Name = reward.Name,
+                };
+                await _emailService.sendEmail(user, stringBuilder.ToString(), "Ezzy Orders");
+
+
+                //insert  to Database
+                var emaiLLogger = new EmailLogger()
+                {
+                    Name = user.Name,
+                    Email = user.Email,
+                    Message = stringBuilder.ToString(),
+                    DateTime = DateTime.Now,
+
+                };
+                await _email.addDatatoDatabase(emaiLLogger);
+
+                await arg.CompleteMessageAsync(arg.Message);//we are done delete the message from the queue 
+            }
+            catch (Exception ex)
+            {
+                throw;
+                //send an Email to Admin
+            }
+        }
+
+
     }
 }

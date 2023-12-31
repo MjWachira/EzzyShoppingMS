@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EzzyShopMessageBus;
+using Microsoft.EntityFrameworkCore;
 using OrderService.Data;
 using OrderService.Models;
 using OrderService.Models.Dtos;
@@ -11,9 +12,14 @@ namespace OrderService.Services
     public class OrderServices : IOrder
     {
         private readonly ApplicationDbContext _context;
-        public OrderServices(ApplicationDbContext context )
+        private readonly IUser _userService;
+        private readonly IMessageBus _messageBUs;
+        public OrderServices(ApplicationDbContext context, 
+            IUser user, IMessageBus messageBUs)
         {
             _context = context;
+            _userService = user;
+            _messageBUs = messageBUs;
         }
         public async Task<List<Orders>> GetAllOrders(Guid userId)
         {
@@ -119,6 +125,24 @@ namespace OrderService.Services
                 order.Status = "Paid";
                 order.PaymentIntent = paymentIntent.Id;
                 await _context.SaveChangesAsync();
+                var user = await _userService.GetUserById(order.UserId.ToString());
+
+                if (string.IsNullOrWhiteSpace(user.Email))
+                {
+                    return false;
+                }
+                else
+                {
+                    var reward = new RewardDto()
+                    {
+                        OrderId = order.Id,
+                        ProductTotal = order.ProductTotal,
+                        Name = user.Name,
+                        Email = user.Email
+
+                    };
+                    await _messageBUs.PublishMessage(reward, "orderadded");
+                }
 
                 return true;
 
