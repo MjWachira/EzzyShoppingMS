@@ -1,0 +1,74 @@
+﻿@page "/addmg"
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+@inject IJSRuntime jsRuntime
+
+<div class="container shadow w-50 p-3">
+    <div class="row">
+        <div class="">
+            <h3>Add Product</h3>
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger">@errorMessage</div>
+            }
+
+            <div class="form-group">
+                <label for="productName">Product Name</label>
+                <input type="text" class="form-control" id="productName" @bind="product.ProductName" placeholder="Enter product name" />
+            </div>
+
+
+            <button type="submit" class="btn btn-primary m-3" @onclick="AddProduct" disabled="@isAddingProduct">Add Product</button>
+
+            @if (isAddingProduct)
+            {
+                <p>Adding product...</p>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private ProductDto product = new ProductDto();
+    private string errorMessage;
+    private bool isAddingProduct = false;
+    private string productId;
+
+    private async Task AddProduct()
+    {
+        try
+        {
+            isAddingProduct = true;
+            var productId = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "productId");
+            var apiEndpoint = $"https://localhost:7232/api/Image/{productId}";
+            var response = await httpClient.PostAsJsonAsync(apiEndpoint, product);
+
+            if (response.IsSuccessStatusCode)
+            {
+                await jsRuntime.InvokeVoidAsync("ShowMessage", "edit", "Product added successfully");
+                navigationManager.NavigateTo("/"); // Redirect to the home page or product list page
+            }
+            else
+            {
+                errorMessage = "Failed to add product. Please try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isAddingProduct = false;
+        }
+    }
+
+  //  private string productId;
+    // Your ProductDto class, adjust as needed
+    private class ProductDto
+    {
+        public string ProductName { get; set; }
+
+        // Add other properties as needed
+    }
+}

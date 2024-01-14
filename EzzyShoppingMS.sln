@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EzzyShopMessageBus", "EzzyS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "zEzzyShoppingFrontend", "zEzzyShoppingFrontend\zEzzyShoppingFrontend.csproj", "{401580DE-9854-4C91-B1AB-233CE48D6C1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zMemoryApp", "zMemoryApp\zMemoryApp.csproj", "{C4DD0947-C5F5-41D0-925E-D2E0EBEDABC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "zMemoryApp", "zMemoryApp\zMemoryApp.csproj", "{C4DD0947-C5F5-41D0-925E-D2E0EBEDABC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
