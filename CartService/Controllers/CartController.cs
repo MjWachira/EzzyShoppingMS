@@ -67,10 +67,11 @@ namespace CartService.Controllers
 
 
 
-        [HttpGet]
-        public async Task<ActionResult<ResponseDto>>MyCartItems()
+        [HttpGet("user{Id}")]
+        public async Task<ActionResult<ResponseDto>>MyCartItems( string Id)
         {
-            var UserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            //var UserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var UserId = Id;
             if (UserId == null)
             {
                 _response.Errormessage = "Please login to view your cart";

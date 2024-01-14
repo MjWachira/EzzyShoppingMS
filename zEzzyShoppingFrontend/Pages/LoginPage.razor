@@ -39,14 +39,13 @@
     private UserLogin user = new UserLogin();
     private string errorMessage;
     private bool isLoggingIn = false;
-
+    private string userId;
 
     private async Task Login()
     {
         try
         {
             isLoggingIn = true;
-            // shall restructure my code soon
             var apiEndpoint = "https://localhost:7269/api/User/login";
             var response = await httpClient.PostAsJsonAsync(apiEndpoint, user);
 
@@ -56,13 +55,12 @@
 
                 if (loginResult != null && loginResult.IsSuccess)
                 {
-                    // Access the token from the login result
                     string token = loginResult.Result.Token;
-                    
-                    // Store the token securely (shall use AuthenticationService soon)
-                    await SaveTokenToSecureStorage(token);
+                    userId = loginResult.Result.User.Id;
+                    string Name = loginResult.Result.User.Name;
 
-                    // Show a success message and navigate
+                    await SaveTokenAndUserIdToSecureStorage(token, userId, Name);
+
                     await jsRuntime.InvokeVoidAsync("ShowMessage", "edit", "Logged in successfully");
                     navigationManager.NavigateTo("/");
                 }
@@ -86,10 +84,31 @@
         }
     }
 
-    private async Task SaveTokenToSecureStorage(string token)
+    private async Task SaveTokenAndUserIdToSecureStorage(string token, string userId, string Name)
     {
-        // Store the token securely, for example, using AuthenticationService or local storage with proper security measures.
         await jsRuntime.InvokeVoidAsync("localStorage.setItem", "authToken", token);
+        await jsRuntime.InvokeVoidAsync("localStorage.setItem", "userId", userId);
+        await jsRuntime.InvokeVoidAsync("localStorage.setItem", "name", Name);
     }
 
+    private class LoginResult
+    {
+        public string ErrorMessage { get; set; }
+        public bool IsSuccess { get; set; }
+        public ResultData Result { get; set; }
+    }
+
+    private class ResultData
+    {
+        public string Token { get; set; }
+        public UserData User { get; set; }
+    }
+
+    private class UserData
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+    }
 }
