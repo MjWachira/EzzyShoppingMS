@@ -41,5 +41,13 @@ namespace CartService.Services
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task<string> UpdateCart(Cart cart)
+        {
+            await _context.SaveChangesAsync();
+            return "Cart Updated Successfully";
+        }
+
+
     }
 }

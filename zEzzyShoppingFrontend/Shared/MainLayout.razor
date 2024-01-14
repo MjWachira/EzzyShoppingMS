@@ -1,0 +1,27 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+
+        <div class="top-row px-4">
+            
+            <a href="cart">
+                <i class="oi oi-cart"></i> Cart
+            </a>
+            <a href="login">
+                <i class="oi oi-person"></i> Account
+            </a>
+            <a href="#">
+                <i class="oi oi-account-logout"></i> Logout
+            </a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>

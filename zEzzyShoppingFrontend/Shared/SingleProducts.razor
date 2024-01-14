@@ -1,0 +1,40 @@
+﻿@inject IJSRuntime _jsRuntime;
+
+<div class="card shadow col-5 m-3 p-2 justify-content-lg-around" style="width: 18rem; ">
+
+    <div class="card w-100">
+        @if (product.ProductImages != null && product.ProductImages.Count > 0)
+        {
+            <img src="@product.ProductImages[0].Image" alt="Product Image" class="card-img w-100" />
+        }
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">@product.ProductName</h5>
+         
+        <div class="d-flex justify-content-between">
+            <span>
+                @product.ProductDescription
+            </span>
+            <span>
+                Ksh @product.Price
+            </span>
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-primary m-1 w-100 justify-content-around" @onclick="AddToCart">Add To Cart</button>
+        <button class="btn btn-dark m-1 w-100 justify-content-around">More Details</button>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+
+    public ProductDto product { get; set; } = default!;
+
+    private async Task AddToCart()
+    {
+        await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "productId", product.Id);
+        await _jsRuntime.InvokeVoidAsync("ShowMessage", "success", "Product added to Cart");
+    }
+}

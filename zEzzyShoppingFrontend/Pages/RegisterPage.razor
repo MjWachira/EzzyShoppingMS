@@ -1,0 +1,69 @@
+﻿@page "/register"
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+@inject IJSRuntime _jsRuntime;
+
+<div class="container shadow w-50 p-3">
+    <div class="row">
+        <div class="">
+            <h3>Register User</h3>
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger">@errorMessage</div>
+            }
+            
+                <div class="form-group">
+                    <label for="name">Full Names</label>
+                    <input type="text" class="form-control" id="name" @bind ="user.Name" placeholder="Enter Full Names" />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" class="form-control" id="email" @bind="user.Email" placeholder="Enter your email" />
+                </div>
+                <div class="form-group">
+                    <label for="name">Phone Number</label>
+                    <input type="text" class="form-control" id="number" @bind="user.PhoneNumber" placeholder="Phone Number" />
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" @bind="user.Password" placeholder="Enter your password" />
+                </div>
+
+                <button class="btn btn-primary m-3" @onclick="Register">Register</button>
+                <div class="">
+                    <p>Already have an account? <a href="/login" class="text-success">Login here</a>.</p>
+                </div>
+            
+        </div>
+    </div>
+</div>
+@code {
+    private UserReg user = new UserReg();
+    private string errorMessage;
+
+    private async Task Register()
+    {
+        try
+        {
+            var apiEndpoint = "https://localhost:7269/api/User";
+            var response = await httpClient.PostAsJsonAsync(apiEndpoint, user);
+
+            if (response.IsSuccessStatusCode)
+            {
+                await _jsRuntime.InvokeVoidAsync("ShowMessage", "edit", "registered in successfully!");
+                navigationManager.NavigateTo("/login");
+
+            }
+            else
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                errorMessage = $"Registration failed becouse: {content}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+    }
+
+}

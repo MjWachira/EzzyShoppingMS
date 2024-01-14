@@ -1,0 +1,83 @@
+﻿@page "/search/{searchTerm}"
+
+@inject HttpClient hClient
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Search</li>
+    </ol>
+</nav>
+
+@if (searchedProducts.Count == 0)
+{
+    <p> No Products found!! </p>
+}
+else
+{
+
+   <h1> Search results for : @searchTerm</h1>
+   <ProductFilter SearchTerm="@searchTerm"></ProductFilter>
+   <p> Price @Price</p>
+    <div class="row">
+        @foreach (var product in searchedProducts)
+        {
+            <SingleProducts product="product"></SingleProducts>
+        }
+    </div>
+
+}
+
+
+@code {
+
+    [Parameter]
+    public string searchTerm { get; set; }
+    public List<ProductDto> prods = new List<ProductDto>();
+    public List<ProductDto> searchedProducts = new List<ProductDto>();
+
+    [Parameter, SupplyParameterFromQuery]
+
+    public int Price { get; set; }
+
+    
+
+    protected override async  Task OnInitializedAsync()
+    {
+        var apiEndpoint = "https://localhost:7232/api/Product";
+        var response = await hClient.GetFromJsonAsync<ProductResponseDto>(apiEndpoint);
+
+        if (response != null && response.IsSuccess)
+        {
+            prods = response.Result;
+
+        }
+        // var prods = await Http.GetFromJsonAsync<List<Product>>("sample-data/products.json");
+
+        //list of all the products
+
+        // Filter based on Name or if the search term is part of the description
+
+        searchedProducts = prods.Where(x => x.ProductName.ToLower().Contains(searchTerm.ToLower()) ||
+         x.ProductDescription.ToLower().Contains(searchTerm.ToLower())
+        ).ToList();
+
+
+    }
+
+    protected override void OnParametersSet()
+    {
+        var filters = new List<Func<ProductDto, bool>>();
+
+        if (Price!=0)
+        {
+            filters.Add(x => x.Price <= Price);
+        }
+        if (filters.Any())
+        {
+            searchedProducts = searchedProducts.Where(product => filters.All(filter => filter(product))).ToList();
+        }
+
+       
+    }
+}

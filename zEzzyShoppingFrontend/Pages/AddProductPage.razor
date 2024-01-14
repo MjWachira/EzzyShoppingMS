@@ -1,0 +1,70 @@
+﻿@page "/addprod"
+@inject HttpClient Http
+@using System.Globalization;
+<div class="row">
+
+    <div class="col-4">
+        <AddProduct @ref="addProduct" OnAddProduct="AddProduct"></AddProduct>
+    </div>
+
+    <div class="col-8">
+        <div class="row">
+            @foreach (var product in products)
+            {
+                <SingleProductToAdd product="product"
+                                    OnRemoveProduct="()=> RemoveProduct(product)"
+                                    OnEditProduct="EditProduct"></SingleProductToAdd>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+
+    public List<Product> products = new List<Product>();
+
+    /// <summary>
+    /// public bool IsConfirmed { get; set; }
+    /// </summary>
+    /// <returns></returns>
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        //call api to get the products to display
+
+        var prods = await Http.GetFromJsonAsync<List<Product>>("sample-data/products.json");
+        if (prods.Any())
+        {
+            products = prods;
+        }
+    }
+
+    public void AddProduct(Product product)
+    {
+        var exitingProduct = products.Find(p => p.Id == product.Id);
+        if (exitingProduct == null)
+        {
+            product.Id = products.Count + 1;
+            products.Add(product);
+            return;
+        }
+        exitingProduct.Name = product.Name;
+        exitingProduct.Description = product.Description;
+        exitingProduct.Price = product.Price;
+        exitingProduct.Image = product.Image;
+    }
+
+    public void RemoveProduct(Product product)
+    {
+        products.Remove(product);
+
+    }
+    public AddProduct addProduct;
+
+    public void EditProduct(Product product)
+    {
+        addProduct.EditProduct(product);
+
+    }
+}

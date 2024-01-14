@@ -18,7 +18,7 @@ namespace AuthService.Controllers
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public UserController(Mapper mapper,IUser user,IConfiguration configuration)
+        public UserController(IMapper mapper,IUser user,IConfiguration configuration)
         {
             _mapper = mapper;
             _userService = user;
@@ -95,16 +95,18 @@ namespace AuthService.Controllers
         public async Task<ActionResult<ResponseDto>> GetUser(string Id)
         {
             var res = await _userService.GetUserById(Id);
-            //var user = _mapper.Map<UserDto>(res);
-            if (res != null)
+            
+            if (res == null)
             {
-                //this was success
-                _response.Result = res;
-                return Ok(_response);
+                _response.Errormessage = "User Not Found ";
+                _response.IsSuccess = false;
+                return NotFound(_response);
             }
-            _response.Errormessage = "User Not Found ";
-            _response.IsSuccess = false;
-            return NotFound(_response);
+
+            //this was success
+            var user = _mapper.Map<UserDto>(res);
+            _response.Result = user;
+            return Ok(_response);
         }
     }
 }

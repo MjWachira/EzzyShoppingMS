@@ -1,0 +1,54 @@
+﻿<EditForm Model="@product" OnValidSubmit="addNewProduct">
+    <DataAnnotationsValidator />
+    <div class="row">
+        <img src="@(string.IsNullOrWhiteSpace(product.Image) ? "https://cdn.pixabay.com/photo/2015/06/24/15/45/hands-820272_1280.jpg" : product.Image)" />
+    </div>
+
+    <div class="row">
+        <h1> @(isEditing ? "Edit Product" : "Add Product")</h1>
+        <ValidationSummary />
+        <div class="form-group">
+            <label for="Name">Name</label>
+            <InputText class="form-control" @bind-Value="product.Name" id="Name" placeholder="Product Name" />
+        </div>
+
+        <div class="form-group">
+            <label for="Description">Description</label>
+            <InputText class="form-control" @bind-Value="product.Description" id="Description" placeholder="Product Description" />
+        </div>
+
+        <div class="form-group">
+            <label for="Image">Image</label>
+            <InputText class="form-control" @bind-Value="product.Image" id="Image" placeholder="Product Image" />
+        </div>
+        <div class="form-group">
+            <label for="Price">Price</label>
+            <InputNumber class="form-control" @bind-Value="product.Price" id="Price" placeholder="Product Price" />
+        </div>
+
+        <button type="submit" class="mt-4 btn btn-primary">@(isEditing ? "Edit" : "Add")</button>
+    </div>
+
+    
+</EditForm>
+
+
+
+@code {
+    public bool isEditing { get; set; } = false;
+
+    public Product product { get; set; } = new Product();
+
+    [Parameter]
+    public EventCallback<Product> OnAddProduct{ get; set; } //communicates with parent to add newly added product to list
+
+    public async Task addNewProduct()
+    {
+        await OnAddProduct.InvokeAsync(product);
+    }
+    public void EditProduct(Product productToEdit)
+    {
+        product = productToEdit;
+        isEditing = true;
+    }
+}

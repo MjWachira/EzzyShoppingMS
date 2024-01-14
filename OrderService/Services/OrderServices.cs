@@ -1,4 +1,4 @@
-﻿using EzzyShopMessageBus;
+﻿
 using Microsoft.EntityFrameworkCore;
 using OrderService.Data;
 using OrderService.Models;
@@ -13,13 +13,13 @@ namespace OrderService.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IUser _userService;
-        private readonly IMessageBus _messageBUs;
+       // private readonly IMessageBus _messageBUs;
         public OrderServices(ApplicationDbContext context, 
-            IUser user, IMessageBus messageBUs)
+            IUser user)
         {
             _context = context;
             _userService = user;
-            _messageBUs = messageBUs;
+           // _messageBUs = messageBUs;
         }
         public async Task<List<Orders>> GetAllOrders(Guid userId)
         {
@@ -73,19 +73,7 @@ namespace OrderService.Services
 
             //discount
 
-            var DiscountObj = new List<SessionDiscountOptions>()
-            {
-                new SessionDiscountOptions()
-                {
-                    Coupon=order.CouponCode
-                }
-            };
 
-            if (order.Discount > 0)
-            {
-                options.Discounts = DiscountObj;
-
-            }
             var service = new SessionService();
             Session session = service.Create(options);
 
@@ -141,7 +129,7 @@ namespace OrderService.Services
                         Email = user.Email
 
                     };
-                    await _messageBUs.PublishMessage(reward, "orderadded");
+                    //await _messageBUs.PublishMessage(reward, "orderadded");
                 }
 
                 return true;

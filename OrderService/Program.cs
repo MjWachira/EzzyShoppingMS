@@ -23,13 +23,12 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.AddAuth();
 builder.AddSwaggenGenExtension();
 
-builder.Services.AddHttpClient("Coupon", c => c.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ServiceURl:CouponService")));
+
 builder.Services.AddHttpClient("user", c => c.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ServiceURl:AuthService")));
 builder.Services.AddHttpClient("Cart", c => c.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ServiceURl:CartService")));
 
 // FOR DI
 builder.Services.AddScoped<ICart, CartServices>();
-builder.Services.AddScoped<ICoupon, CouponServices>();
 builder.Services.AddScoped<IOrder, OrderServices>();
 builder.Services.AddScoped<IUser, UserServices>();
 

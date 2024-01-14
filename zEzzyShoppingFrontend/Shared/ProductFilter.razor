@@ -1,0 +1,49 @@
+﻿@inject NavigationManager navigation
+
+<div class="filters">
+    <label for="Price">Max Price</label>
+    <input id="MaxPrice"
+           type="number"
+           class="form-control"
+           @bind="_maxPrice" />
+    <br />
+    <br />
+    <button class="btn btn-outline-primary"
+            @onclick="FilterSearchResults">
+        Filter
+    </button>
+    <button class="btn btn-outline-secondary"
+            @onclick="ClearSearchFilter">
+        Clear
+    </button>
+
+    <br />
+    <br />
+</div>
+
+@code {
+
+    private int _maxPrice { get; set; }
+
+    [Parameter]
+    public string SearchTerm { get; set; }
+
+    private void FilterSearchResults()
+    {
+        //query params
+
+        var uriWithQuery = navigation.GetUriWithQueryParameters(new Dictionary<string, object>()
+            {
+                ["Price"] = _maxPrice > 0 ? _maxPrice : 0
+            });
+
+        navigation.NavigateTo(uriWithQuery);
+    }
+
+    private void ClearSearchFilter()
+    {
+        _maxPrice = 0;
+        navigation.NavigateTo($"search/{SearchTerm}");
+    }
+
+}

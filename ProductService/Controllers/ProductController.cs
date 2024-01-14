@@ -25,7 +25,7 @@ namespace ProductService.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<ActionResult<ResponseDto>> AddProduct(AddProductDto product)
         {
             var prod = _mapper.Map<Product>(product);

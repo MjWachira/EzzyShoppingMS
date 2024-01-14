@@ -1,0 +1,44 @@
+﻿@page "/cart"
+@inject IJSRuntime jsRuntime
+@inject HttpClient httpClient
+
+
+@if (prods != null)
+{
+    <div class="flex-column" style="height:80%">
+        @foreach (var product in prods)
+        {
+
+            <CartProduct product="product"></CartProduct>
+        }
+    <div style="position:relative; margin-bottom:10px"> 
+        <p>Cart Totals</p>
+        <p>Ksh 0</p>
+       <button  class="btn btn-primary m-1 justify-content-around align-bottom">Complete Order</button>
+    </div>
+    </div>
+}
+@code {
+    public List<ProductDto> prods = new List<ProductDto>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var apiEndpoint = "https://localhost:7232/api/Product";
+            var response = await httpClient.GetFromJsonAsync<ProductResponseDto>(apiEndpoint);
+
+
+            if (response != null && response.IsSuccess)
+            {
+                prods = response.Result;
+            }
+        }
+        catch (Exception ex)
+        {
+
+            await jsRuntime.InvokeVoidAsync("ShowMessage", "edit", ex.Message);
+        }
+    }
+}

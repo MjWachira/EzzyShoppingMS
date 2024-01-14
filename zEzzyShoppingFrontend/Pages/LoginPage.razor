@@ -1,0 +1,95 @@
+﻿@page "/login"
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+@inject IJSRuntime jsRuntime
+
+<div class="container shadow w-50 p-3">
+    <div class="row">
+        <div class="">
+            <h3>User Login</h3>
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger">@errorMessage</div>
+            }
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" id="email" @bind="user.UserName" placeholder="Enter your email" />
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" @bind="user.Password" placeholder="Enter your password" />
+            </div>
+
+            <button type="submit" class="btn btn-primary m-3" @onclick="Login" disabled="@isLoggingIn">Login</button>
+
+            @if (isLoggingIn)
+            {
+                <p>Loading...</p>
+            }
+
+            <div class="">
+                <p>New user? <a href="/register" class="text-success">Register here</a>.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private UserLogin user = new UserLogin();
+    private string errorMessage;
+    private bool isLoggingIn = false;
+
+
+    private async Task Login()
+    {
+        try
+        {
+            isLoggingIn = true;
+            // shall restructure my code soon
+            var apiEndpoint = "https://localhost:7269/api/User/login";
+            var response = await httpClient.PostAsJsonAsync(apiEndpoint, user);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var loginResult = await response.Content.ReadFromJsonAsync<LoginResult>();
+
+                if (loginResult != null && loginResult.IsSuccess)
+                {
+                    // Access the token from the login result
+                    string token = loginResult.Result.Token;
+                    
+                    // Store the token securely (shall use AuthenticationService soon)
+                    await SaveTokenToSecureStorage(token);
+
+                    // Show a success message and navigate
+                    await jsRuntime.InvokeVoidAsync("ShowMessage", "edit", "Logged in successfully");
+                    navigationManager.NavigateTo("/");
+                }
+                else
+                {
+                    errorMessage = "Invalid credentials. Please try again.";
+                }
+            }
+            else
+            {
+                errorMessage = "Check your details and try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isLoggingIn = false;
+        }
+    }
+
+    private async Task SaveTokenToSecureStorage(string token)
+    {
+        // Store the token securely, for example, using AuthenticationService or local storage with proper security measures.
+        await jsRuntime.InvokeVoidAsync("localStorage.setItem", "authToken", token);
+    }
+
+}

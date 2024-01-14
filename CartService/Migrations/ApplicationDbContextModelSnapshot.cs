@@ -28,14 +28,21 @@ namespace CartService.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("CouponCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Discount")
+                        .HasColumnType("float");
+
                     b.Property<int>("ProductCount")
                         .HasColumnType("int");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ProductPrice")
-                        .HasColumnType("int");
+                    b.Property<double>("ProductPrice")
+                        .HasColumnType("float");
 
                     b.Property<int>("ProductTotal")
                         .HasColumnType("int");

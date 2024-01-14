@@ -70,7 +70,7 @@ namespace MailService.Messaging
             {
 
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.Append("<img src=\"https://cdn.pixabay.com/photo/2013/07/13/09/51/drink-156144_1280.png\" width=\"800\" height=\"500\">");
+                stringBuilder.Append("<img src=\"https://cdn.pixabay.com/photo/2023/12/13/14/01/christmas-8446981_1280.png\" width=\"800\" height=\"500\">");
                 stringBuilder.Append("<h1> Hello " + user.Name + "</h1>");
                 stringBuilder.AppendLine("<br/>Welcome to Ezzy Shopping");
                 stringBuilder.Append("<br/>");
@@ -108,7 +108,7 @@ namespace MailService.Messaging
             {
 
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.Append("<img src=\"https://cdn.pixabay.com/photo/2016/01/02/16/53/lion-1118467_640.jpg\" width=\"1000\" height=\"600\">");
+                stringBuilder.Append("<img src=\"https://cdn.pixabay.com/photo/2016/04/01/09/42/buy-1299519_1280.png\" width=\"1000\" height=\"600\">");
                 stringBuilder.Append("<h1> Hello " + reward.Name + "</h1>");
                 stringBuilder.AppendLine("<br/> Order Placed Successfully ");
 

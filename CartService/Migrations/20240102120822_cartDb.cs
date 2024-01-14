@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CartService.Migrations
 {
     /// <inheritdoc />
-    public partial class EzzyCartDb : Migration
+    public partial class cartDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,8 +18,10 @@ namespace CartService.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductPrice = table.Column<int>(type: "int", nullable: false),
+                    ProductPrice = table.Column<double>(type: "float", nullable: false),
                     ProductCount = table.Column<int>(type: "int", nullable: false),
+                    CouponCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Discount = table.Column<double>(type: "float", nullable: false),
                     ProductTotal = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

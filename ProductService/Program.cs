@@ -21,6 +21,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("myconnection"));
 });
+
+//Set cors policy
+builder.Services.AddCors(options => options.AddPolicy("policy1", build =>
+{
+    //build.WithOrigins("https://localhost:7257");
+    build.AllowAnyOrigin();
+    build.AllowAnyHeader();
+    build.AllowAnyMethod();
+}));
 //Reg for DI
 builder.Services.AddScoped<IProduct, ProductServices>();
 builder.Services.AddScoped<IImage, ImageServices>();    
@@ -45,5 +54,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("policy1");
 
 app.Run();

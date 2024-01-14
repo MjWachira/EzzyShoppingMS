@@ -1,0 +1,73 @@
+[
+  {
+    "Id": 1,
+    "Name": "Monitors",
+    "Description": "Best Monitor",
+    "Price": "2000",
+    "Image": "https://cdn.pixabay.com/photo/2014/09/28/11/25/imac-464737_1280.jpg"
+  },
+  {
+    "Id": 2,
+    "Name": "Keyboards",
+    "Description": "Best Keyboards",
+    "Price": "500",
+    "Image": "https://cdn.pixabay.com/photo/2015/08/13/01/00/keyboard-886462_640.jpg"
+  },
+  {
+    "Id": 3,
+    "Name": "Laptop",
+    "Description": "Best Laptop",
+    "Price": "50000",
+    "Image": "https://cdn.pixabay.com/photo/2016/02/17/15/37/laptop-1205256_640.jpg"
+  },
+  {
+    "Id": 4,
+    "Name": "Monitors",
+    "Description": "Best Monitor",
+    "Price": "2000",
+    "Image": "https://cdn.pixabay.com/photo/2015/06/24/15/45/hands-820272_1280.jpg"
+  },
+  {
+    "Id": 5,
+    "Name": "Laptop",
+    "Description": "Best Laptop",
+    "Price": "50000",
+    "Image": "https://cdn.pixabay.com/photo/2016/02/17/15/37/laptop-1205256_640.jpg"
+  },
+  {
+    "Id": 6,
+    "Name": "Laptop",
+    "Description": "Best Laptop",
+    "Price": "50000",
+    "Image": "https://cdn.pixabay.com/photo/2016/02/17/15/37/laptop-1205256_640.jpg"
+  },
+  {
+    "Id": 7,
+    "Name": "Laptop",
+    "Description": "Best Laptop",
+    "Price": "50000",
+    "Image": "https://cdn.pixabay.com/photo/2016/02/17/15/37/laptop-1205256_640.jpg"
+  },
+  {
+    "Id": 8,
+    "Name": "Laptop",
+    "Description": "Best Laptop",
+    "Price": "50000",
+    "Image": "https://cdn.pixabay.com/photo/2016/02/17/15/37/laptop-1205256_640.jpg"
+  },
+  {
+    "Id": 9,
+    "Name": "Laptop",
+    "Description": "Best Laptop",
+    "Price": "50000",
+    "Image": "https://cdn.pixabay.com/photo/2016/02/17/15/37/laptop-1205256_640.jpg"
+  },
+  {
+    "Id": 10,
+    "Name": "Laptop",
+    "Description": "Best Laptop",
+    "Price": "50000",
+    "Image": "https://cdn.pixabay.com/photo/2016/02/17/15/37/laptop-1205256_640.jpg"
+  }
+
+]
